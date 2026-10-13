@@ -8,12 +8,12 @@
 struct dstr {
 	size_t len; // length of used portion of buffer
 	size_t sz; // actual size of buffer
-	char* buf;
+	char *buf;
 };
 
-int dstr_init(struct dstr* dstr); // 0 on fail
-void dstr_free(struct dstr* dstr);
+int dstr_init(struct dstr *dstr); // 0 on fail
+void dstr_free(struct dstr *dstr);
 
-int dstr_add(struct dstr* dstr, char c);
+int dstr_add(struct dstr *dstr, char c);
 
 #endif
