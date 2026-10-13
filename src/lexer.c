@@ -30,17 +30,16 @@ int lexer_parse(struct lexer* lexer, FILE *file)
 	int c;
 	while (1) {
 		c = fgetc(file);
-		printf("read '%c' (0x%02x)\n", c, c);
 	reswitch:
 		switch (lexer->mode) {
 		case LEXER_MODE_START:
-			if (isspace(c)) {
-				goto nextchar;
+			if (c == EOF) {
+				return 1;
+			} if (isspace(c)) {
+				continue;
 			} else if (isalpha(c) || c == '_') {
 				lexer->mode = LEXER_MODE_IDENT;
 				goto nextchar;
-			} else if (c == EOF) {
-				return 1;
 			} else {
 				fprintf(stderr, "unexpected character '%c' (0x%02x)\n", c, c);
 				return 0;
@@ -56,7 +55,7 @@ int lexer_parse(struct lexer* lexer, FILE *file)
 
 	tokenend:
 		if (!darr_add(&lexer->tokens, lexer->str.buf)) return 0;
-		lexer->str.len = 0;
+		if (!dstr_init(&lexer->str)) return 0;
 		lexer->mode = LEXER_MODE_START;
 		goto reswitch;
 
@@ -64,6 +63,4 @@ int lexer_parse(struct lexer* lexer, FILE *file)
 		if (c == '\n') line++;
 		if (!dstr_add(&lexer->str, c)) return 0;
 	}
-
-	return 1;
 }
