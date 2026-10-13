@@ -9,7 +9,6 @@
 int lexer_init(struct lexer *lexer)
 {
 	if (!darr_init(&lexer->tokens)) return 0;
-	if (!dstr_init(&lexer->str)) return 0;
 	lexer->mode = LEXER_MODE_START;
 	return 1;
 }
@@ -20,7 +19,6 @@ void lexer_free(struct lexer *lexer)
 		free(lexer->tokens.buf[i]);
 	}
 	darr_free(&lexer->tokens);
-	dstr_free(&lexer->str);
 }
 
 int lexer_parse(struct lexer* lexer, FILE *file)
@@ -36,12 +34,12 @@ int lexer_parse(struct lexer* lexer, FILE *file)
 			if (c == EOF) {
 				return 1;
 			} if (isspace(c)) {
-				continue;
+				goto skipchar;
 			} else if (isalpha(c) || c == '_') {
 				lexer->mode = LEXER_MODE_IDENT;
-				goto nextchar;
+				goto tokenstart;
 			} else {
-				fprintf(stderr, "unexpected character '%c' (0x%02x)\n", c, c);
+				fprintf(stderr, "unexpected character '%c' (0x%02x) on line %i\n", c, c, line);
 				return 0;
 			}
 		case LEXER_MODE_IDENT:
@@ -55,12 +53,14 @@ int lexer_parse(struct lexer* lexer, FILE *file)
 
 	tokenend:
 		if (!darr_add(&lexer->tokens, lexer->str.buf)) return 0;
-		if (!dstr_init(&lexer->str)) return 0;
 		lexer->mode = LEXER_MODE_START;
 		goto reswitch;
 
+	tokenstart:
+		if (!dstr_init(&lexer->str)) return 0;
 	nextchar:
-		if (c == '\n') line++;
 		if (!dstr_add(&lexer->str, c)) return 0;
+	skipchar:
+		if (c == '\n') line++;
 	}
 }
