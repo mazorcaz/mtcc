@@ -7,14 +7,24 @@
 
 #include "dstr.h"
 #include "darr.h"
+#include "token.h"
 
 #define LEXER_MODE_START 1
 #define LEXER_MODE_IDENT 2
+#define LEXER_MODE_DIGIT 3
+#define LEXER_MODE_OP 4
+
+#define LEXER_OP_MINUS 1
+#define LEXER_OP_PLUS 2
+#define LEXER_OP_STAR 3
+#define LEXER_OP_SLASH 4
 
 struct lexer {
 	int mode;
 	struct darr tokens;
 	struct dstr str;
+
+	struct token *token;
 };
 
 int lexer_init(struct lexer *lexer);
