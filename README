@@ -24,3 +24,7 @@ style guide (https://docs.kernel.org/process/coding-style.html).
    (e.g. // main.c)
 
  - Header guards are prefixed with MTCC_ (e.g. MTCC_MAIN_H).
+
+ - When init functions fail, free functions need not be called.
+   But when a non-init function fails, the free function must
+   be called on the object before exiting.
