@@ -19,6 +19,7 @@
 #define LEXER_MODE_OP_MINUSMINUS 8
 #define LEXER_MODE_OP_STAR 9
 #define LEXER_MODE_OP_SLASH 10
+#define LEXER_MODE_HASH 11
 
 struct lexer {
 	int mode;

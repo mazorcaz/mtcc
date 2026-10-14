@@ -3,6 +3,7 @@
 #include <ctype.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "lexer.h"
 
@@ -54,10 +55,20 @@ int lexer_parse(struct lexer* lexer, FILE *file)
 			if ((lexer->str.len == 0 && (isalpha(c) || c == '_')) || (isalnum(c) || c == '_')) {
 				goto nextchar;
 			} else {
-				lexer->token->type = TOKEN_IDENT;
-				lexer->token->types.ident.str = lexer->str.buf;
-				if (!dstr_init(&lexer->str)) return 0;
-				goto tokenend;
+				if (strcmp(lexer->str.buf, "int") == 0) {
+					lexer->token->type = TOKEN_KEYWORD;
+					lexer->token->types.keyword.type = TOKEN_KEYWORD_INT;
+					goto tokenend;
+				} else if (strcmp(lexer->str.buf, "char") == 0) {
+					lexer->token->type = TOKEN_KEYWORD;
+					lexer->token->types.keyword.type = TOKEN_KEYWORD_CHAR;
+					goto tokenend;
+				} else {
+					lexer->token->type = TOKEN_IDENT;
+					lexer->token->types.ident.str = lexer->str.buf;
+					if (!dstr_init(&lexer->str)) return 0;
+					goto tokenend;
+				}
 			}
 		case LEXER_MODE_DIGIT:
 			if (isdigit(c)) {
