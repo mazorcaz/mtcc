@@ -43,7 +43,7 @@ int lexer_parse(struct lexer* lexer, FILE *file)
 			} else if (isdigit(c)) {
 				lexer->mode = LEXER_MODE_DIGIT;
 				goto tokenstart;
-			} else if (c == '_' || c == '*') {
+			} else if (c == '+' || c == '-' || c == '*' || c == '/') {
 				lexer->mode = LEXER_MODE_OP;
 				goto tokenstart;
 			} else {
@@ -54,23 +54,41 @@ int lexer_parse(struct lexer* lexer, FILE *file)
 			if ((lexer->str.len == 0 && (isalpha(c) || c == '_')) || (isalnum(c) || c == '_')) {
 				goto nextchar;
 			} else {
+				lexer->token->type = TOKEN_IDENT;
+				lexer->token->types.ident.str = lexer->str.buf;
+				if (!dstr_init(&lexer->str)) return 0;
 				goto tokenend;
 			}
 		case LEXER_MODE_DIGIT:
 			if (isdigit(c)) {
 				goto nextchar;
 			} else {
+				char *endptr;
+				lexer->token->type = TOKEN_NUM;
+				lexer->token->types.num.value = strtol(lexer->str.buf, &endptr, 10);
 				goto tokenend;
 			}
 		case LEXER_MODE_OP:
 			if (c == '+') {
-				lexer->token->type = TOKEN_OP;
-				lexer->token->types.op
+				lexer->mode = LEXER_MODE_OP_PLUS;
+				goto nextchar;
+			} else if (c == '-') {
+				lexer->mode = LEXER_MODE_OP_MINUS;
+				goto nextchar;
 			}
+		case LEXER_MODE_OP_PLUS:
+			lexer->token->type = TOKEN_OP;
+			lexer->token->types.op.type = TOKEN_OP_PLUS;
+			goto tokenend;
+		case LEXER_MODE_OP_MINUS:
+			lexer->token->type = TOKEN_OP;
+			lexer->token->types.op.type = TOKEN_OP_MINUS;
+			goto tokenend;
 		}
 		return 0;
 
 	tokenstart:
+		lexer->str.len = 0;
 		lexer->token = malloc(sizeof(struct token));
 		if (!lexer->token) {
 			fprintf(stderr, "lexer_parse: malloc failed\n");

@@ -13,6 +13,8 @@
 #define LEXER_MODE_IDENT 2
 #define LEXER_MODE_DIGIT 3
 #define LEXER_MODE_OP 4
+#define LEXER_MODE_OP_PLUS 5
+#define LEXER_MODE_OP_MINUS 6
 
 #define LEXER_OP_MINUS 1
 #define LEXER_OP_PLUS 2
