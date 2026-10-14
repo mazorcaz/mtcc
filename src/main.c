@@ -26,6 +26,12 @@ int main()
 			case TOKEN_OP_MINUS:
 				printf("OP -\n");
 				break;
+			case TOKEN_OP_PLUSPLUS:
+				printf("OP ++\n");
+				break;
+			case TOKEN_OP_MINUSMINUS:
+				printf("OP --\n");
+				break;
 			}
 		}
 	}

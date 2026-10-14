@@ -77,12 +77,30 @@ int lexer_parse(struct lexer* lexer, FILE *file)
 				goto nextchar;
 			}
 		case LEXER_MODE_OP_PLUS:
-			lexer->token->type = TOKEN_OP;
-			lexer->token->types.op.type = TOKEN_OP_PLUS;
-			goto tokenend;
+			if (c == '+') {
+				lexer->mode = LEXER_MODE_OP_PLUSPLUS;
+				goto nextchar;
+			} else {
+				lexer->token->type = TOKEN_OP;
+				lexer->token->types.op.type = TOKEN_OP_PLUS;
+				goto tokenend;
+			}
 		case LEXER_MODE_OP_MINUS:
+			if (c == '-') {
+				lexer->mode = LEXER_MODE_OP_MINUSMINUS;
+				goto nextchar;
+			} else {
+				lexer->token->type = TOKEN_OP;
+				lexer->token->types.op.type = TOKEN_OP_MINUS;
+				goto tokenend;
+			}
+		case LEXER_MODE_OP_PLUSPLUS:
 			lexer->token->type = TOKEN_OP;
-			lexer->token->types.op.type = TOKEN_OP_MINUS;
+			lexer->token->types.op.type = TOKEN_OP_PLUSPLUS;
+			goto tokenend;
+		case LEXER_MODE_OP_MINUSMINUS:
+			lexer->token->type = TOKEN_OP;
+			lexer->token->types.op.type = TOKEN_OP_MINUSMINUS;
 			goto tokenend;
 		}
 		return 0;

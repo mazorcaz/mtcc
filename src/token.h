@@ -13,6 +13,10 @@
 
 #define TOKEN_OP_PLUS 1
 #define TOKEN_OP_MINUS 2
+#define TOKEN_OP_PLUSPLUS 3
+#define TOKEN_OP_MINUSMINUS 4
+#define TOKEN_OP_STAR 5
+#define TOKEN_OP_SLASH 6
 
 struct token_ident {
 	char *str;
