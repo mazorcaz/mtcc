@@ -59,6 +59,12 @@ int main()
 			case TOKEN_OP_CLOSEBRACKET:
 				printf("OP ]\n");
 				break;
+			case TOKEN_OP_DOT:
+				printf("OP .\n");
+				break;
+			case TOKEN_OP_SEMICOLON:
+				printf("OP ;\n");
+				break;
 			}
 		} else if (token->type = TOKEN_KEYWORD) {
 			switch(token->types.keyword.type) {

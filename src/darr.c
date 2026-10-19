@@ -29,7 +29,7 @@ int darr_add(struct darr *darr, void* v)
 		do {
 			darr->sz <<= 1;
 		} while (darr->len >= darr->sz);
-		void **newbuf = malloc(sizeof(void*) * darr->sz);
+		void **newbuf = realloc(darr->buf, sizeof(void*) * darr->sz);
 		if (!newbuf) {
 			fprintf(stderr, "darr_add: malloc failed\n");
 			return 0;

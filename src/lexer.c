@@ -62,6 +62,10 @@ int lexer_parse(struct lexer *lexer, FILE *file)
 				lexer->mode = LEXER_MODE_OP_OPENBRACKET;
 			} else if (c == ']') {
 				lexer->mode = LEXER_MODE_OP_CLOSEBRACKET;
+			} else if (c == '.') {
+				lexer->mode = LEXER_MODE_OP_DOT;
+			} else if (c == ';') {
+				lexer->mode = LEXER_MODE_OP_SEMICOLON;
 			} else {
 				fprintf(stderr, "unexpected character '%c' (0x%02x) on line %i\n", c, c, line);
 				return 0;
@@ -185,6 +189,14 @@ int lexer_parse(struct lexer *lexer, FILE *file)
 		case LEXER_MODE_OP_CLOSEBRACKET:
 			lexer->token->type = TOKEN_OP;
 			lexer->token->types.op.type = TOKEN_OP_CLOSEBRACKET;
+			goto tokenend;
+		case LEXER_MODE_OP_DOT:
+			lexer->token->type = TOKEN_OP;
+			lexer->token->types.op.type = TOKEN_OP_DOT;
+			goto tokenend;
+		case LEXER_MODE_OP_SEMICOLON:
+			lexer->token->type = TOKEN_OP;
+			lexer->token->types.op.type = TOKEN_OP_SEMICOLON;
 			goto tokenend;
 		}
 		return 0;
