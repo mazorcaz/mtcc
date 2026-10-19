@@ -74,7 +74,7 @@ int main()
 				printf("OP ;\n");
 				break;
 			}
-		} else if (token->type = TOKEN_KEYWORD) {
+		} else if (token->type == TOKEN_KEYWORD) {
 			switch(token->types.keyword.type) {
 			case TOKEN_KEYWORD_INT:
 				printf("KEYWORD int\n");
