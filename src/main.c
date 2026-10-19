@@ -7,9 +7,17 @@
 
 int main()
 {
+	int errcode = 0;
+
 	struct lexer lexer;
-	if (!lexer_init(&lexer)) return -1;
-	if (!lexer_parse(&lexer, stdin)) return -1;
+	if (!lexer_init(&lexer)) {
+		errcode = -1;
+		goto out;
+	}
+	if (!lexer_parse(&lexer, stdin)) {
+		errcode = -2;
+		goto out_free_lexer;
+	}
 
 	printf("len is %i\n", lexer.tokens.len);
 	for (int i=0; i<lexer.tokens.len; i++) {
@@ -78,7 +86,8 @@ int main()
 		}
 	}
 
+out_free_lexer:
 	lexer_free(&lexer);
-
-	return 0;
+out:
+	return errcode;
 }

@@ -19,6 +19,7 @@ void lexer_free(struct lexer *lexer)
 {
 	for (int i=0; i<lexer->tokens.len; i++) {
 		token_free(lexer->tokens.buf[i]);
+		free(lexer->tokens.buf[i]);
 	}
 	darr_free(&lexer->tokens);
 	dstr_free(&lexer->str);
@@ -91,7 +92,7 @@ int lexer_parse(struct lexer *lexer, FILE *file)
 			}
 			goto skipchar;
 		case LEXER_MODE_IDENT:
-			if ((lexer->str.len == 0 && (isalpha(c) || c == '_')) || (isalnum(c) || c == '_')) {
+			if (isalnum(c) || c == '_') {
 				goto nextchar;
 			} else {
 				if (strcmp(lexer->str.buf, "int") == 0) {
