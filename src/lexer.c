@@ -43,6 +43,8 @@ int lexer_parse(struct lexer *lexer, FILE *file)
 				lexer->mode = LEXER_MODE_IDENT;
 			} else if (isdigit(c)) {
 				lexer->mode = LEXER_MODE_DIGIT;
+			} else if (c == '#') {
+				lexer->mode = LEXER_MODE_HASH;
 			} else if (c == '+') {
 				lexer->mode = LEXER_MODE_OP_PLUS;
 			} else if (c == '-') {
@@ -118,6 +120,37 @@ int lexer_parse(struct lexer *lexer, FILE *file)
 				lexer->token->type = TOKEN_NUM;
 				lexer->token->types.num.value = strtol(lexer->str.buf, &endptr, 10);
 				goto tokenend;
+			}
+		case LEXER_MODE_HASH:
+			if (isalpha(c)) {
+				goto nextchar;
+			} else {
+				if (strcmp(lexer->str.buf, "#include") == 0) {
+					lexer->mode = LEXER_MODE_HASH_INCLUDE_START;
+					goto nextchar;
+				} else {
+					fprintf(stderr, "unknown preprocessor directive '%s' on line %i\n", lexer->str.buf, line);
+					return 0;
+				}
+			}
+		case LEXER_MODE_HASH_INCLUDE_START:
+			if (c == '\n') {
+				fprintf(stderr, "expected 1 argument to #include on line %i\n", lexer->str.buf, line);
+				return 0;
+			} else if (isspace(c)) {
+				goto skipchar;
+			} else {
+				lexer->mode = LEXER_MODE_HASH_INCLUDE;
+				lexer->str.len = 0;
+				goto nextchar;
+			}
+		case LEXER_MODE_HASH_INCLUDE:
+			if (c == '\n' || c == EOF) {
+				printf("#include'ing '%s'\n", lexer->str.buf);
+				lexer->mode = LEXER_MODE_START;
+				goto reswitch;
+			} else {
+				goto nextchar;
 			}
 		case LEXER_MODE_OP_PLUS:
 			if (c == '+') {
