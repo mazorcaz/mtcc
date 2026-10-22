@@ -1,8 +1,11 @@
 MTCC: Mazorcaz's Tiny C Compiler
 --------------------------------
 
-MTCC is a self hosting C compiler I made
+MTCC is a small self hosting C compiler I made
 mostly for fun and to learn more about C.
+
+It primarily targets a subset of C11, with
+no VLA or obscure feature support.
 
 PROJECT STRUCTURE & BUILDING
 ----------------------------
@@ -21,7 +24,7 @@ Unless specified, stick to the Linux Kernel
 style guide (https://docs.kernel.org/process/coding-style.html).
 
  - At the top of the file is a comment with the file name
-   (e.g. // main.c)
+   (e.g. /* main.c */)
 
  - Header guards are prefixed with MTCC_ (e.g. MTCC_MAIN_H).
 
